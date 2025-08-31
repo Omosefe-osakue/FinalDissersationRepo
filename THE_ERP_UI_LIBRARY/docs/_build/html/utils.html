@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Utilities &#8212; SML Dissertation Project 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Architecture" href="architecture.html" />
+    <link rel="prev" title="Pages" href="pages.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="utilities">
+<h1>Utilities<a class="headerlink" href="#utilities" title="Link to this heading">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>The Utils module in the ERP UI Library contains utility functions that support the creation of complex UI components. The module currently provides two key utilities:</p>
+<ol class="arabic simple">
+<li><p><strong>TableUtils</strong>: Functions for creating and managing tables using GTK Grid</p></li>
+<li><p><strong>ImageUtils</strong>: Functions for loading and scaling images for UI components</p></li>
+</ol>
+<p>These utilities demonstrate how functional programming principles like higher-order functions and pure functions can be applied to simplify common UI development tasks.</p>
+</section>
+<section id="table-utilities">
+<h2>Table Utilities<a class="headerlink" href="#table-utilities" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">TableUtils</span></code> structure provides functions for creating and managing dynamic tables with GTK Grid. It simplifies the process of constructing properly styled, consistent tables for displaying data in ERP applications.</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Create a table with headers and initial data *)</span>
+<span class="kr">val</span> <span class="nv">tableData</span> <span class="p">=</span> <span class="n">ref</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;001&quot;</span><span class="p">,</span> <span class="s2">&quot;Widget A&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;$10.00&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;002&quot;</span><span class="p">,</span> <span class="s2">&quot;Gadget B&quot;</span><span class="p">,</span> <span class="s2">&quot;12&quot;</span><span class="p">,</span> <span class="s2">&quot;$25.50&quot;</span><span class="p">]</span>
+<span class="p">]</span>
+
+<span class="kr">val</span> <span class="nv">table</span> <span class="p">=</span> <span class="nn">TableUtils</span><span class="p">.</span><span class="n">createTable</span> <span class="p">{</span>
+    <span class="n">headers</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Product Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Quantity&quot;</span><span class="p">,</span> <span class="s2">&quot;Price&quot;</span><span class="p">],</span>
+    <span class="n">rows</span> <span class="p">=</span> <span class="n">tableData</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Key Features:</p>
+<ul class="simple">
+<li><p><strong>Grid-Based Tables</strong>: Creates tables using GTK Grid for flexible layout</p></li>
+<li><p><strong>Styled Headers</strong>: Properly styled table headers with consistent spacing</p></li>
+<li><p><strong>Dynamic Data</strong>: Uses references for mutable table data that can be updated</p></li>
+<li><p><strong>Consistent Styling</strong>: Applies CSS classes for standardized appearance</p></li>
+<li><p><strong>Helper Functions</strong>: Includes utility functions like <code class="docutils literal notranslate"><span class="pre">appi</span></code> for indexed iteration over lists</p></li>
+</ul>
+<p>Implementation:</p>
+<p><code class="docutils literal notranslate"><span class="pre">TableUtils</span></code> includes two main components:</p>
+<ol class="arabic">
+<li><p><code class="docutils literal notranslate"><span class="pre">appi</span></code>: A higher-order function for indexed iteration over lists, useful for creating table rows and cells</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">createTable</span></code>: The main function that constructs a GTK Grid widget with headers and data rows</p>
+<p>Parameters:
+- <code class="docutils literal notranslate"><span class="pre">headers</span></code>: A list of strings for column headers
+- <code class="docutils literal notranslate"><span class="pre">rows</span></code>: A reference to a list of string lists, where each inner list represents a row</p>
+<p>Returns:
+- A configured GTK Grid widget representing the table</p>
+</li>
+</ol>
+<p>Each table cell is properly styled using:
+- Consistent margins via <code class="docutils literal notranslate"><span class="pre">SpacingScale</span></code> values
+- CSS classes (“table-header-cell” and “table-data-cell”)
+- Proper alignment settings</p>
+</section>
+<section id="image-utilities">
+<h2>Image Utilities<a class="headerlink" href="#image-utilities" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">ImageUtils</span></code> structure provides functions for working with images in GTK-based UI components. It simplifies the process of loading, scaling, and displaying images with proper error handling.</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Load and scale an image from a file *)</span>
+<span class="kr">val</span> <span class="nv">logoImage</span> <span class="p">=</span> <span class="nn">ImageUtils</span><span class="p">.</span><span class="n">scaledImageFromFile</span> <span class="p">(</span><span class="s2">&quot;resources/logo.png&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">))</span>
+
+<span class="cm">(* Can be added directly to containers *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Container</span><span class="p">.</span><span class="n">add</span> <span class="n">imageContainer</span> <span class="n">logoImage</span>
+</pre></div>
+</div>
+<p>Key Features:</p>
+<ul class="simple">
+<li><p><strong>Image Loading</strong>: Simplified loading of images from file paths</p></li>
+<li><p><strong>Automatic Scaling</strong>: Built-in scaling to requested dimensions</p></li>
+<li><p><strong>Error Handling</strong>: Graceful fallback to a default icon if image loading fails</p></li>
+<li><p><strong>Integration with GTK</strong>: Returns Gtk.Image.t widgets ready for use in UI</p></li>
+</ul>
+<p>Implementation:</p>
+<p><code class="docutils literal notranslate"><span class="pre">ImageUtils</span></code> provides a key function:</p>
+<p><code class="docutils literal notranslate"><span class="pre">scaledImageFromFile</span></code>: Loads and scales an image from a file path</p>
+<blockquote>
+<div><p>Parameters:
+- <code class="docutils literal notranslate"><span class="pre">path</span></code>: String path to the image file
+- <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code>: Tuple of integers specifying the desired dimensions</p>
+<p>Returns:
+- A GTK Image widget containing the loaded and scaled image
+- If loading fails, returns a “image-missing” stock icon instead</p>
+</div></blockquote>
+<p>The implementation uses GTK’s GdkPixbuf for loading and scaling images, handling errors gracefully with pattern matching and exception handling.</p>
+</section>
+<section id="functional-programming-approach">
+<h2>Functional Programming Approach<a class="headerlink" href="#functional-programming-approach" title="Link to this heading">¶</a></h2>
+<p>Both utilities demonstrate functional programming principles:</p>
+<ol class="arabic simple">
+<li><p><strong>Higher-Order Functions</strong>: <code class="docutils literal notranslate"><span class="pre">TableUtils.appi</span></code> takes a function as an argument</p></li>
+<li><p><strong>Pure Functions</strong>: Core operations have no side effects</p></li>
+<li><p><strong>Exception Handling</strong>: <code class="docutils literal notranslate"><span class="pre">ImageUtils</span></code> uses pattern matching for handling error cases</p></li>
+<li><p><strong>Immutable Values</strong>: Most values are treated as immutable</p></li>
+<li><p><strong>Separation of Concerns</strong>: Each utility focuses on a single responsibility</p></li>
+</ol>
+</section>
+<section id="usage-best-practices">
+<h2>Usage Best Practices<a class="headerlink" href="#usage-best-practices" title="Link to this heading">¶</a></h2>
+<p>When working with these utilities:</p>
+<ol class="arabic simple">
+<li><p><strong>Table Data Management</strong>: Keep table data in references if it needs to be updated</p></li>
+<li><p><strong>Image Path Management</strong>: Ensure image paths are correct relative to the application</p></li>
+<li><p><strong>Error Handling</strong>: Consider the fallback behavior of <code class="docutils literal notranslate"><span class="pre">ImageUtils</span></code> when images might be missing</p></li>
+<li><p><strong>Styling Consistency</strong>: Use the built-in styling from these utilities for visual consistency</p></li>
+<li><p><strong>Functional Style</strong>: Leverage the functional patterns in your own code that uses these utilities</p></li>
+</ol>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SML Dissertation Project</a></h1>
+
+
+
+
+
+
+
+
+<div class="sphinxsidebarwrapper">
+    <h3>On this page</h3>
+    <ul>
+<li><a class="reference internal" href="#">Utilities</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#table-utilities">Table Utilities</a></li>
+<li><a class="reference internal" href="#image-utilities">Image Utilities</a></li>
+<li><a class="reference internal" href="#functional-programming-approach">Functional Programming Approach</a></li>
+<li><a class="reference internal" href="#usage-best-practices">Usage Best Practices</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Navigation</h3>
+  <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage Guide</a></li>
+  </ul>
+  <p class="caption" role="heading"><span class="caption-text">Library Components</span></p>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="tokens.html">Design Tokens</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="layout_components.html">Layout Components</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="dashboard_components.html">Dashboard Components</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="pages.html">Pages</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="#">Utilities</a></li>
+  </ul>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+  </ul>
+</div><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="pages.html" title="previous chapter">Pages</a></li>
+      <li>Next: <a href="architecture.html" title="next chapter">Architecture</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/utils.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

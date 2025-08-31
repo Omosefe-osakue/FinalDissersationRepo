@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Architecture &#8212; SML Dissertation Project 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Utilities" href="utils.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="architecture">
+<h1>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h1>
+<section id="system-architecture">
+<h2>System Architecture<a class="headerlink" href="#system-architecture" title="Link to this heading">¶</a></h2>
+<p>The ERP UI Library is built on a functional architecture that emphasizes immutability, composition, and type safety. This architectural approach differs significantly from traditional object-oriented UI frameworks, providing unique advantages for complex enterprise applications.</p>
+</section>
+<section id="key-architectural-principles">
+<h2>Key Architectural Principles<a class="headerlink" href="#key-architectural-principles" title="Link to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p><strong>Functional Core, Imperative Shell</strong></p>
+<p>The library follows the “functional core, imperative shell” pattern:</p>
+<ul class="simple">
+<li><p><strong>Functional Core</strong>: The inner logic of components is implemented with pure functions</p></li>
+<li><p><strong>Imperative Shell</strong>: GTK interactions at the boundaries are handled with imperative code</p></li>
+<li><p><strong>Clear Separation</strong>: Distinct boundary between pure functional code and side-effecting code</p></li>
+</ul>
+</li>
+<li><p><strong>Module Hierarchy</strong></p>
+<p>The codebase is organized into a clear module hierarchy:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>THE_ERP_UI_LIBRARY/
+├── code/
+│   ├── main.sml           # Entry point and application setup
+│   └── src/               # Library components
+│       ├── Tokens/        # Design system primitives
+│       ├── Utils/         # Helper functions
+│       ├── LayoutComponents/ # Structural components
+│       ├── DashboardComponents/ # Data visualization
+│       └── Pages/         # Complete page implementations
+</pre></div>
+</div>
+</li>
+<li><p><strong>Component Composition</strong></p>
+<p>Components are designed for composition:</p>
+<ul class="simple">
+<li><p>Pages are composed of layout components and dashboard components</p></li>
+<li><p>Layout components are composed of primitive widgets and other layout components</p></li>
+<li><p>Higher-level components delegate to lower-level components rather than inheriting from them</p></li>
+</ul>
+</li>
+<li><p><strong>Functor-Based Templates</strong></p>
+<p>The library uses SML functors to create parameterized templates:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BasePage</span></code> functor creates page templates with consistent structure</p></li>
+<li><p>Functors enable code reuse while maintaining type safety</p></li>
+<li><p>Parameterization allows for customization without code duplication</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="component-interaction-flow">
+<h2>Component Interaction Flow<a class="headerlink" href="#component-interaction-flow" title="Link to this heading">¶</a></h2>
+<p>The diagram below illustrates how components interact in a typical application flow:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>User Input → Widget Events → Event Handlers → State Updates → UI Updates
+    │             │              │                │             │
+    └─────────────┴──────────────┘                └─────────────┘
+                  │                                     │
+              Pure Functions                       Side Effects
+            (Business Logic)                    (GTK Interactions)
+</pre></div>
+</div>
+<p>In this flow:</p>
+<ol class="arabic simple">
+<li><p>User interacts with GTK widgets</p></li>
+<li><p>Events are captured by event handlers</p></li>
+<li><p>Pure functions process the events and compute new state</p></li>
+<li><p>State changes trigger UI updates via GTK functions</p></li>
+</ol>
+</section>
+<section id="state-management">
+<h2>State Management<a class="headerlink" href="#state-management" title="Link to this heading">¶</a></h2>
+<p>The library manages state using functional patterns:</p>
+<ol class="arabic simple">
+<li><p><strong>Immutable State</strong>:</p>
+<ul class="simple">
+<li><p>State is represented as immutable values</p></li>
+<li><p>Updates create new state rather than mutating existing state</p></li>
+<li><p>References (<code class="docutils literal notranslate"><span class="pre">ref</span></code>) are used where necessary for global state</p></li>
+</ul>
+</li>
+<li><p><strong>Unidirectional Data Flow</strong>:</p>
+<ul class="simple">
+<li><p>State flows down from containers to contained components</p></li>
+<li><p>Events flow up from components to containers</p></li>
+<li><p>Clear, predictable data flow in a single direction</p></li>
+</ul>
+</li>
+<li><p><strong>Centralized App State</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">AppState</span></code> module provides centralized state management</p></li>
+<li><p>Components access state through pure functions</p></li>
+<li><p>Updates follow a consistent pattern</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="type-system-usage">
+<h2>Type System Usage<a class="headerlink" href="#type-system-usage" title="Link to this heading">¶</a></h2>
+<p>The library leverages SML’s type system for safety and clarity:</p>
+<ol class="arabic simple">
+<li><p><strong>Signatures and Structures</strong>:</p>
+<ul class="simple">
+<li><p>Components define clear signatures (interfaces)</p></li>
+<li><p>Implementations are provided in structures</p></li>
+<li><p>Abstract types hide implementation details</p></li>
+</ul>
+</li>
+<li><p><strong>Algebraic Data Types</strong>:</p>
+<ul class="simple">
+<li><p>Sum types for representing variants (e.g., dialog types)</p></li>
+<li><p>Product types for representing complex data</p></li>
+<li><p>Pattern matching for exhaustive handling of all cases</p></li>
+</ul>
+</li>
+<li><p><strong>Parameterized Types</strong>:</p>
+<ul class="simple">
+<li><p>Polymorphic functions for flexibility</p></li>
+<li><p>Type constructors for creating specialized types</p></li>
+<li><p>Type annotations for clarity</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="gtk-integration">
+<h2>GTK Integration<a class="headerlink" href="#gtk-integration" title="Link to this heading">¶</a></h2>
+<p>The library integrates with GTK while maintaining functional principles:</p>
+<ol class="arabic simple">
+<li><p><strong>Wrapping Imperative APIs</strong>:</p>
+<ul class="simple">
+<li><p>Pure function wrappers around imperative GTK functions</p></li>
+<li><p>Clear separation between pure logic and GTK interactions</p></li>
+<li><p>Consistent patterns for widget creation and manipulation</p></li>
+</ul>
+</li>
+<li><p><strong>Signal Handling</strong>:</p>
+<ul class="simple">
+<li><p>Higher-order functions for event handling</p></li>
+<li><p>Clean separation of event logic from UI structure</p></li>
+<li><p>Pure functions for computing responses to events</p></li>
+</ul>
+</li>
+<li><p><strong>Widget Lifecycle</strong>:</p>
+<ul class="simple">
+<li><p>Functional approach to creating widget hierarchies</p></li>
+<li><p>Careful management of widget references</p></li>
+<li><p>Consistent patterns for widget destruction</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="error-handling">
+<h2>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading">¶</a></h2>
+<p>The library uses functional error handling patterns:</p>
+<ol class="arabic simple">
+<li><p><strong>Option Types</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">option</span></code> type for representing optional values</p></li>
+<li><p>Pattern matching for handling presence/absence</p></li>
+<li><p>Clear handling of “no value” cases</p></li>
+</ul>
+</li>
+<li><p><strong>Result Types</strong>:</p>
+<ul class="simple">
+<li><p>Custom result types for operations that can fail</p></li>
+<li><p>Pattern matching for handling success/failure</p></li>
+<li><p>Composition of results through higher-order functions</p></li>
+</ul>
+</li>
+<li><p><strong>Exceptions</strong>:</p>
+<ul class="simple">
+<li><p>Limited use of exceptions for truly exceptional conditions</p></li>
+<li><p>Clean exception boundaries</p></li>
+<li><p>Consistent error reporting</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="build-system">
+<h2>Build System<a class="headerlink" href="#build-system" title="Link to this heading">¶</a></h2>
+<p>The library uses a structured build system:</p>
+<ol class="arabic simple">
+<li><p><strong>Makefile-Based Build</strong>:</p>
+<ul class="simple">
+<li><p>Central <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> for primary build tasks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">app.mk</span></code> for application-specific build configuration</p></li>
+<li><p>Consistent build patterns across environments</p></li>
+</ul>
+</li>
+<li><p><strong>PolyML Configuration</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">polyml-libs.sml</span></code> for library dependencies</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">polyml-app.sml</span></code> for application configuration</p></li>
+<li><p>Clean separation of library and application builds</p></li>
+</ul>
+</li>
+<li><p><strong>Documentation Generation</strong>:</p>
+<ul class="simple">
+<li><p>Sphinx-based documentation system</p></li>
+<li><p>RST format for documentation files</p></li>
+<li><p>Automated HTML generation</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="application-structure">
+<h2>Application Structure<a class="headerlink" href="#application-structure" title="Link to this heading">¶</a></h2>
+<p>A typical application built with the library has this runtime structure:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- App
+  |- Main Window
+     |- Navigation Stack
+        |- Login Page
+        |- Dashboard Page
+           |- Header
+           |- KPI Cards
+           |- Content Panels
+           |- Footer
+        |- Inventory Page
+        |- Settings Page
+        |- Sales Order Page
+</pre></div>
+</div>
+<p>This structure is created through function composition rather than inheritance, with each component created by functions that return GTK widgets.</p>
+</section>
+<section id="design-patterns">
+<h2>Design Patterns<a class="headerlink" href="#design-patterns" title="Link to this heading">¶</a></h2>
+<p>The library demonstrates several functional design patterns:</p>
+<ol class="arabic simple">
+<li><p><strong>Smart Constructors</strong>:</p>
+<ul class="simple">
+<li><p>Functions that validate inputs and ensure invariants</p></li>
+<li><p>Abstraction of complex construction logic</p></li>
+<li><p>Consistent naming patterns (<code class="docutils literal notranslate"><span class="pre">create</span></code>, <code class="docutils literal notranslate"><span class="pre">build</span></code>, etc.)</p></li>
+</ul>
+</li>
+<li><p><strong>Higher-Order Components</strong>:</p>
+<ul class="simple">
+<li><p>Functions that transform or enhance existing components</p></li>
+<li><p>Separation of generic and specific component logic</p></li>
+<li><p>Composition of behaviors through function composition</p></li>
+</ul>
+</li>
+<li><p><strong>Type-Driven Development</strong>:</p>
+<ul class="simple">
+<li><p>Using types to guide implementation</p></li>
+<li><p>Designing interfaces before implementations</p></li>
+<li><p>Leveraging the type system for correctness</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="architectural-benefits">
+<h2>Architectural Benefits<a class="headerlink" href="#architectural-benefits" title="Link to this heading">¶</a></h2>
+<p>This functional architecture provides several benefits:</p>
+<ol class="arabic simple">
+<li><p><strong>Predictability</strong>: Pure functions produce consistent results</p></li>
+<li><p><strong>Testability</strong>: Pure functions are easier to test</p></li>
+<li><p><strong>Maintainability</strong>: Clear separation of concerns simplifies maintenance</p></li>
+<li><p><strong>Scalability</strong>: Composition enables building complex systems from simple parts</p></li>
+<li><p><strong>Reliability</strong>: Strong typing and immutability reduce certain classes of bugs</p></li>
+</ol>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SML Dissertation Project</a></h1>
+
+
+
+
+
+
+
+
+<div class="sphinxsidebarwrapper">
+    <h3>On this page</h3>
+    <ul>
+<li><a class="reference internal" href="#">Architecture</a><ul>
+<li><a class="reference internal" href="#system-architecture">System Architecture</a></li>
+<li><a class="reference internal" href="#key-architectural-principles">Key Architectural Principles</a></li>
+<li><a class="reference internal" href="#component-interaction-flow">Component Interaction Flow</a></li>
+<li><a class="reference internal" href="#state-management">State Management</a></li>
+<li><a class="reference internal" href="#type-system-usage">Type System Usage</a></li>
+<li><a class="reference internal" href="#gtk-integration">GTK Integration</a></li>
+<li><a class="reference internal" href="#error-handling">Error Handling</a></li>
+<li><a class="reference internal" href="#build-system">Build System</a></li>
+<li><a class="reference internal" href="#application-structure">Application Structure</a></li>
+<li><a class="reference internal" href="#design-patterns">Design Patterns</a></li>
+<li><a class="reference internal" href="#architectural-benefits">Architectural Benefits</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Navigation</h3>
+  <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage Guide</a></li>
+  </ul>
+  <p class="caption" role="heading"><span class="caption-text">Library Components</span></p>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="tokens.html">Design Tokens</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="layout_components.html">Layout Components</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="dashboard_components.html">Dashboard Components</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="pages.html">Pages</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+  </ul>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="#">Architecture</a></li>
+  </ul>
+</div><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="utils.html" title="previous chapter">Utilities</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/architecture.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

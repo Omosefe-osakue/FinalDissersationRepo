@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Overview &#8212; SML Dissertation Project 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="The ERP UI Library Documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h1>
+<section id="the-erp-ui-library">
+<h2>The ERP UI Library<a class="headerlink" href="#the-erp-ui-library" title="Link to this heading">¶</a></h2>
+<p>The ERP UI Library is a comprehensive Standard ML (SML) library for building Enterprise Resource Planning (ERP) user interfaces using functional programming principles. It demonstrates how functional programming concepts can be applied to create maintainable, type-safe, and consistent UI components for complex business applications.</p>
+</section>
+<section id="core-design-principles">
+<h2>Core Design Principles<a class="headerlink" href="#core-design-principles" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Pure Functional Approach</strong>: Emphasizes immutability and pure functions to reduce side effects and improve predictability</p></li>
+<li><p><strong>Strong Type System</strong>: Leverages SML’s powerful type system to prevent runtime errors</p></li>
+<li><p><strong>Composition Over Inheritance</strong>: Uses functional composition to build complex components from simpler ones</p></li>
+<li><p><strong>Consistent Design Language</strong>: Implements a design token system for consistent visual styling</p></li>
+<li><p><strong>Modular Architecture</strong>: Organizes code into well-defined modules with clear interfaces</p></li>
+</ol>
+</section>
+<section id="library-structure">
+<h2>Library Structure<a class="headerlink" href="#library-structure" title="Link to this heading">¶</a></h2>
+<p>The library is organized into five main module categories:</p>
+<ol class="arabic simple">
+<li><p><strong>Tokens</strong>: Design system primitives like font sizes, spacing scales, and CSS utilities</p></li>
+<li><p><strong>Layout Components</strong>: Structural UI elements like headers, footers, and navigation</p></li>
+<li><p><strong>Dashboard Components</strong>: Specialized widgets for data visualization and KPIs</p></li>
+<li><p><strong>Pages</strong>: Complete page implementations built from components</p></li>
+<li><p><strong>Utils</strong>: Helper functions and utilities</p></li>
+</ol>
+</section>
+<section id="technology-stack">
+<h2>Technology Stack<a class="headerlink" href="#technology-stack" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Standard ML</strong>: The core programming language providing functional features and type safety</p></li>
+<li><p><strong>Giraffe</strong>: SML bindings for the GTK UI toolkit</p></li>
+<li><p><strong>GTK+</strong>: The underlying UI toolkit for rendering widgets and handling events</p></li>
+</ul>
+</section>
+<section id="functional-programming-features">
+<h2>Functional Programming Features<a class="headerlink" href="#functional-programming-features" title="Link to this heading">¶</a></h2>
+<p>The library showcases several key functional programming concepts:</p>
+<ul class="simple">
+<li><p>Higher-order functions for event handling and component customization</p></li>
+<li><p>Function composition for building complex behaviors</p></li>
+<li><p>Pattern matching for robust handling of component variations</p></li>
+<li><p>Immutable data structures to simplify state management</p></li>
+<li><p>Functors for creating parameterized components</p></li>
+</ul>
+</section>
+<section id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Link to this heading">¶</a></h2>
+<p>Here’s a simplified example of how components can be composed:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Create a basic dashboard page *)</span>
+<span class="kr">val</span> <span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">contentBox</span><span class="p">)</span> <span class="nv">=</span> <span class="nn">DashboardPage</span><span class="p">.</span><span class="n">create</span> <span class="p">{</span>
+  <span class="n">stack</span> <span class="p">=</span> <span class="n">navigationStack</span><span class="p">,</span>
+  <span class="n">menuItems</span> <span class="p">=</span> <span class="n">SOME</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;Dashboard&quot;</span><span class="p">,</span> <span class="s2">&quot;dashboard&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Inventory&quot;</span><span class="p">,</span> <span class="s2">&quot;inventory&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Settings&quot;</span><span class="p">,</span> <span class="s2">&quot;settings&quot;</span><span class="p">)</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="cm">(* Add a KPI card to track sales *)</span>
+<span class="kr">val</span> <span class="nv">salesKPI</span> <span class="p">=</span> <span class="nn">KPICard</span><span class="p">.</span><span class="n">create</span> <span class="p">{</span>
+  <span class="n">label</span> <span class="p">=</span> <span class="s2">&quot;Monthly Sales&quot;</span><span class="p">,</span>
+  <span class="n">value</span> <span class="p">=</span> <span class="s2">&quot;$123,456&quot;</span><span class="p">,</span>
+  <span class="n">trend</span> <span class="p">=</span> <span class="n">SOME</span> <span class="s2">&quot;+10% vs last month&quot;</span>
+<span class="p">}</span>
+
+<span class="cm">(* Add the KPI to the page content *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Container</span><span class="p">.</span><span class="n">add</span> <span class="n">contentBox</span> <span class="n">salesKPI</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SML Dissertation Project</a></h1>
+
+
+
+
+
+
+
+
+<div class="sphinxsidebarwrapper">
+    <h3>On this page</h3>
+    <ul>
+<li><a class="reference internal" href="#">Overview</a><ul>
+<li><a class="reference internal" href="#the-erp-ui-library">The ERP UI Library</a></li>
+<li><a class="reference internal" href="#core-design-principles">Core Design Principles</a></li>
+<li><a class="reference internal" href="#library-structure">Library Structure</a></li>
+<li><a class="reference internal" href="#technology-stack">Technology Stack</a></li>
+<li><a class="reference internal" href="#functional-programming-features">Functional Programming Features</a></li>
+<li><a class="reference internal" href="#example-usage">Example Usage</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Navigation</h3>
+  <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="#">Overview</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage Guide</a></li>
+  </ul>
+  <p class="caption" role="heading"><span class="caption-text">Library Components</span></p>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="tokens.html">Design Tokens</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="layout_components.html">Layout Components</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="dashboard_components.html">Dashboard Components</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="pages.html">Pages</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+  </ul>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+  </ul>
+</div><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">The ERP UI Library Documentation</a></li>
+      <li>Next: <a href="installation.html" title="next chapter">Installation</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/overview.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

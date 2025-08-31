@@ -1,0 +1,27 @@
+<div class="sphinxsidebarwrapper">
+  {%- if display_toc %}
+    <h3>{{ _('On this page') }}</h3>
+    {{ toc }}
+  {%- endif %}
+
+  {%- if pagename != "search" %}
+  <h3>{{ _('Navigation') }}</h3>
+  <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="{{ pathto('overview') }}">Overview</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="{{ pathto('installation') }}">Installation</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="{{ pathto('usage') }}">Usage Guide</a></li>
+  </ul>
+  <p class="caption" role="heading"><span class="caption-text">Library Components</span></p>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="{{ pathto('tokens') }}">Design Tokens</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="{{ pathto('layout_components') }}">Layout Components</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="{{ pathto('dashboard_components') }}">Dashboard Components</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="{{ pathto('pages') }}">Pages</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="{{ pathto('utils') }}">Utilities</a></li>
+  </ul>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="{{ pathto('architecture') }}">Architecture</a></li>
+  </ul>
+  {%- endif %}
+</div>

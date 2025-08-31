@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Usage Guide &#8212; SML Dissertation Project 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Design Tokens" href="tokens.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="usage-guide">
+<h1>Usage Guide<a class="headerlink" href="#usage-guide" title="Link to this heading">¶</a></h1>
+<p>This section provides practical guidance on how to use the ERP UI Library components built with Standard ML.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
+<p>To use this library in your Standard ML project:</p>
+<ol class="arabic simple">
+<li><p>Include the library files in your project directory</p></li>
+<li><p>Import the necessary modules using the SML module system</p></li>
+</ol>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="n">use</span> <span class="s2">&quot;path/to/THE_ERP_UI_LIBRARY/main.sml&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="core-components">
+<h2>Core Components<a class="headerlink" href="#core-components" title="Link to this heading">¶</a></h2>
+<section id="design-tokens">
+<h3>Design Tokens<a class="headerlink" href="#design-tokens" title="Link to this heading">¶</a></h3>
+<p>The library provides a robust design token system for consistent styling:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Example of using design tokens *)</span>
+<span class="kr">val</span> <span class="nv">spacingScale</span> <span class="p">=</span> <span class="nn">Tokens</span><span class="p">.</span><span class="nn">spacingScale</span><span class="p">.</span><span class="n">small</span><span class="p">;</span>
+<span class="kr">val</span> <span class="nv">fontSize</span> <span class="p">=</span> <span class="nn">Tokens</span><span class="p">.</span><span class="nn">fontSize</span><span class="p">.</span><span class="n">large</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="layout-components">
+<h3>Layout Components<a class="headerlink" href="#layout-components" title="Link to this heading">¶</a></h3>
+<section id="header-component">
+<h4>Header Component<a class="headerlink" href="#header-component" title="Link to this heading">¶</a></h4>
+<p>The Header component provides a consistent application header with optional logo and username display:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Header: Displays the company logo, name, and username at the top of the UI. *)</span>
+<span class="kr">structure</span> <span class="nn">Header</span> <span class="p">=</span> <span class="kr">struct</span>
+  <span class="kr">fun</span> <span class="nf">create</span> <span class="p">{</span><span class="n">imagePath</span> <span class="p">:</span> <span class="n">string</span> <span class="n">option</span><span class="p">,</span> <span class="n">text</span> <span class="p">:</span> <span class="n">string</span><span class="p">,</span> <span class="n">username</span> <span class="p">:</span> <span class="n">string</span> <span class="n">option</span><span class="p">}</span> <span class="p">=</span>
+    <span class="kr">let</span>
+      <span class="kr">open</span> <span class="nn">Gtk</span>
+      <span class="kr">val</span> <span class="nv">containerBox</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="kr">val</span> <span class="nv">headerBox</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">HORIZONTAL</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+      <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Widget</span><span class="p">.</span><span class="n">setSizeRequest</span> <span class="n">headerBox</span> <span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+
+      <span class="cm">(* Add logo if provided *)</span>
+      <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="kr">case</span> <span class="n">imagePath</span> <span class="kr">of</span>
+          <span class="n">SOME</span> <span class="n">path</span> <span class="p">=&gt;</span>
+            <span class="kr">let</span>
+              <span class="kr">val</span> <span class="nv">logoBox</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">HORIZONTAL</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+              <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">packStart</span> <span class="n">headerBox</span> <span class="p">(</span><span class="n">logoBox</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+              <span class="kr">val</span> <span class="nv">aspectFrame</span> <span class="p">=</span> <span class="nn">AspectFrame</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">NONE</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">false</span><span class="p">)</span>
+              <span class="kr">val</span> <span class="nv">image</span> <span class="p">=</span> <span class="nn">ImageUtils</span><span class="p">.</span><span class="n">scaledImageFromFile</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="mi">36</span><span class="p">))</span>
+              <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Container</span><span class="p">.</span><span class="n">add</span> <span class="n">aspectFrame</span> <span class="n">image</span>
+              <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">packStart</span> <span class="n">logoBox</span> <span class="p">(</span><span class="n">aspectFrame</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="kr">in</span>
+              <span class="p">()</span>
+            <span class="kr">end</span>
+        <span class="n">|</span> <span class="n">NONE</span> <span class="p">=&gt;</span> <span class="p">()</span>
+
+      <span class="cm">(* Add title in center *)</span>
+      <span class="kr">val</span> <span class="nv">spacer1</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">HORIZONTAL</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">packStart</span> <span class="n">headerBox</span> <span class="p">(</span><span class="n">spacer1</span><span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+      <span class="kr">val</span> <span class="nv">label</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">SOME</span> <span class="n">text</span><span class="p">)</span>
+      <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Widget</span><span class="p">.</span><span class="n">setName</span> <span class="n">label</span> <span class="s2">&quot;company_name&quot;</span>
+      <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">h4</span> <span class="n">label</span> <span class="n">text</span>
+      <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">packStart</span> <span class="n">headerBox</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+      <span class="kr">val</span> <span class="nv">spacer2</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">HORIZONTAL</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">packStart</span> <span class="n">headerBox</span> <span class="p">(</span><span class="n">spacer2</span><span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+      <span class="cm">(* Add username if provided *)</span>
+      <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="kr">case</span> <span class="n">username</span> <span class="kr">of</span>
+        <span class="n">SOME</span> <span class="n">name</span> <span class="p">=&gt;</span>
+          <span class="kr">let</span>
+            <span class="kr">val</span> <span class="nv">userLabel</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">SOME</span> <span class="n">name</span><span class="p">)</span>
+            <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Widget</span><span class="p">.</span><span class="n">setName</span> <span class="n">userLabel</span> <span class="s2">&quot;username&quot;</span>
+            <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">h4</span> <span class="n">userLabel</span> <span class="n">name</span>
+            <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">packEnd</span> <span class="n">headerBox</span> <span class="p">(</span><span class="n">userLabel</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+          <span class="kr">in</span>
+            <span class="p">()</span>
+          <span class="kr">end</span>
+      <span class="n">|</span> <span class="n">NONE</span> <span class="p">=&gt;</span> <span class="p">()</span>
+
+      <span class="cm">(* Add horizontal separator *)</span>
+      <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">packStart</span> <span class="n">containerBox</span> <span class="p">(</span><span class="n">headerBox</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+      <span class="kr">val</span> <span class="nv">separator</span> <span class="p">=</span> <span class="nn">Separator</span><span class="p">.</span><span class="n">new</span> <span class="nn">Orientation</span><span class="p">.</span><span class="n">HORIZONTAL</span>
+      <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">packStart</span> <span class="n">containerBox</span> <span class="p">(</span><span class="n">separator</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="kr">in</span>
+      <span class="n">containerBox</span>
+    <span class="kr">end</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h3>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Creating a header component *)</span>
+<span class="kr">val</span> <span class="nv">header</span> <span class="p">=</span> <span class="nn">Layout</span><span class="p">.</span><span class="nn">Header</span><span class="p">.</span><span class="n">create</span> <span class="p">{</span>
+  <span class="n">title</span> <span class="p">=</span> <span class="s2">&quot;My ERP Application&quot;</span><span class="p">,</span>
+  <span class="n">user</span> <span class="p">=</span> <span class="n">Some</span> <span class="s2">&quot;Admin User&quot;</span><span class="p">,</span>
+  <span class="n">notifications</span> <span class="p">=</span> <span class="mi">3</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="dashboard-components">
+<h2>Dashboard Components<a class="headerlink" href="#dashboard-components" title="Link to this heading">¶</a></h2>
+<section id="kpi-cards">
+<h3>KPI Cards<a class="headerlink" href="#kpi-cards" title="Link to this heading">¶</a></h3>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Creating a KPI card *)</span>
+<span class="kr">val</span> <span class="nv">salesKPI</span> <span class="p">=</span> <span class="nn">Dashboard</span><span class="p">.</span><span class="nn">KPICard</span><span class="p">.</span><span class="n">create</span> <span class="p">{</span>
+  <span class="n">title</span> <span class="p">=</span> <span class="s2">&quot;Total Sales&quot;</span><span class="p">,</span>
+  <span class="n">value</span> <span class="p">=</span> <span class="s2">&quot;$1,245,000&quot;</span><span class="p">,</span>
+  <span class="n">change</span> <span class="p">=</span> <span class="n">Some</span> <span class="p">{</span> <span class="n">value</span> <span class="p">=</span> <span class="mf">12.5</span><span class="p">,</span> <span class="n">positive</span> <span class="p">=</span> <span class="n">true</span> <span class="p">},</span>
+  <span class="n">icon</span> <span class="p">=</span> <span class="n">Some</span> <span class="nn">Icons</span><span class="p">.</span><span class="n">trendingUp</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="page-templates">
+<h2>Page Templates<a class="headerlink" href="#page-templates" title="Link to this heading">¶</a></h2>
+<p>Use functors to create consistent page templates:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Creating a data listing page *)</span>
+<span class="kr">structure</span> <span class="nn">InventoryPage</span> <span class="p">=</span> <span class="n">PageTemplate</span><span class="p">(</span>
+  <span class="kr">struct</span>
+    <span class="kr">val</span> <span class="nv">title</span> <span class="p">=</span> <span class="s2">&quot;Inventory Management&quot;</span>
+    <span class="kr">val</span> <span class="nv">table</span> <span class="p">=</span> <span class="p">{</span>
+      <span class="n">columns</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Product&quot;</span><span class="p">,</span> <span class="s2">&quot;Quantity&quot;</span><span class="p">,</span> <span class="s2">&quot;Status&quot;</span><span class="p">],</span>
+      <span class="n">data</span> <span class="p">=</span> <span class="n">inventoryData</span>
+    <span class="p">}</span>
+  <span class="kr">end</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Maintain immutability by using the provided update functions instead of modifying component state directly</p></li>
+<li><p>Use pattern matching for handling component variations</p></li>
+<li><p>Leverage higher-order functions for component callbacks</p></li>
+<li><p>Compose components using the functional composition operators</p></li>
+</ol>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SML Dissertation Project</a></h1>
+
+
+
+
+
+
+
+
+<div class="sphinxsidebarwrapper">
+    <h3>On this page</h3>
+    <ul>
+<li><a class="reference internal" href="#">Usage Guide</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#core-components">Core Components</a><ul>
+<li><a class="reference internal" href="#design-tokens">Design Tokens</a></li>
+<li><a class="reference internal" href="#layout-components">Layout Components</a><ul>
+<li><a class="reference internal" href="#header-component">Header Component</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dashboard-components">Dashboard Components</a><ul>
+<li><a class="reference internal" href="#kpi-cards">KPI Cards</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#page-templates">Page Templates</a></li>
+<li><a class="reference internal" href="#best-practices">Best Practices</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Navigation</h3>
+  <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="#">Usage Guide</a></li>
+  </ul>
+  <p class="caption" role="heading"><span class="caption-text">Library Components</span></p>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="tokens.html">Design Tokens</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="layout_components.html">Layout Components</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="dashboard_components.html">Dashboard Components</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="pages.html">Pages</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+  </ul>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+  </ul>
+</div><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="installation.html" title="previous chapter">Installation</a></li>
+      <li>Next: <a href="tokens.html" title="next chapter">Design Tokens</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/usage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

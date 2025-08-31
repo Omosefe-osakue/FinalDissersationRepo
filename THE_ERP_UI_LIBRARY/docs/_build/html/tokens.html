@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Design Tokens &#8212; SML Dissertation Project 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Layout Components" href="layout_components.html" />
+    <link rel="prev" title="Usage Guide" href="usage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="design-tokens">
+<h1>Design Tokens<a class="headerlink" href="#design-tokens" title="Link to this heading">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>Design tokens form the foundation of the ERP UI Library’s design system. They provide a centralized way to manage visual attributes such as font sizes, spacing, and colors across the application, ensuring consistency and making it easier to maintain or update the design.</p>
+<p>The token system demonstrates functional programming’s ability to create simple, reusable abstractions that can be composed to build more complex systems.</p>
+<section id="font-size-hierarchy">
+<h3>Font Size Hierarchy<a class="headerlink" href="#font-size-hierarchy" title="Link to this heading">¶</a></h3>
+<p>The module provides a semantic type scale that ranges from largest (h1) to smallest (caption):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>h1Size     -&gt; 32.0pt - Main page titles, most prominent text
+h2Size     -&gt; 28.0pt - Section titles
+h3Size     -&gt; 24.0pt - Subsection headings
+h4Size     -&gt; 16.0pt - Minor headings
+h5Size     -&gt; 14.0pt - Widget labels, small headings
+h6Size     -&gt; 11.0pt - Auxiliary text elements
+bodySize   -&gt; 14.0pt - Regular paragraph text (same as h5 by default)
+captionSize -&gt; 8.0pt  - Small caption text, footnotes
+</pre></div>
+</div>
+</section>
+<section id="usage-patterns">
+<h3>Usage Patterns<a class="headerlink" href="#usage-patterns" title="Link to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p><strong>Direct Access to Size Values</strong></p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Access the raw size values directly when needed *)</span>
+<span class="kr">val</span> <span class="nv">largestSize</span> <span class="p">=</span> <span class="n">!</span><span class="nn">FontSize</span><span class="p">.</span><span class="n">h1Size</span>  <span class="cm">(* 32.0 points *)</span>
+<span class="kr">val</span> <span class="nv">normalTextSize</span> <span class="p">=</span> <span class="n">!</span><span class="nn">FontSize</span><span class="p">.</span><span class="n">bodySize</span>  <span class="cm">(* 14.0 points *)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Applying Font Sizes to Labels</strong></p>
+<p>The most common usage pattern is to apply a semantic font size directly to a GTK label:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Create a new label *)</span>
+<span class="kr">val</span> <span class="nv">titleLabel</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">SOME</span> <span class="s2">&quot;Dashboard&quot;</span><span class="p">)</span>
+
+<span class="cm">(* Apply h1 style to make it a page title *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">h1</span> <span class="n">titleLabel</span> <span class="s2">&quot;Dashboard&quot;</span>
+
+<span class="cm">(* For secondary headings, use h2 *)</span>
+<span class="kr">val</span> <span class="nv">sectionLabel</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">SOME</span> <span class="s2">&quot;Recent Activity&quot;</span><span class="p">)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">h2</span> <span class="n">sectionLabel</span> <span class="s2">&quot;Recent Activity&quot;</span>
+
+<span class="cm">(* For regular text, use body *)</span>
+<span class="kr">val</span> <span class="nv">descriptionLabel</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">SOME</span> <span class="s2">&quot;This dashboard shows KPIs&quot;</span><span class="p">)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">body</span> <span class="n">descriptionLabel</span> <span class="s2">&quot;This dashboard shows KPIs&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Using Pango Markup for Complex Text</strong></p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Create text with custom size using Pango markup *)</span>
+<span class="kr">val</span> <span class="nv">customSizedText</span> <span class="p">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">withSize</span> <span class="s2">&quot;Critical Alert&quot;</span> <span class="p">(</span><span class="n">!</span><span class="nn">FontSize</span><span class="p">.</span><span class="n">h3Size</span><span class="p">)</span>
+<span class="kr">val</span> <span class="nv">alertLabel</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">NONE</span><span class="p">)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">setMarkup</span> <span class="n">alertLabel</span> <span class="n">customSizedText</span>
+
+<span class="cm">(* Combine with other markup for rich text *)</span>
+<span class="kr">val</span> <span class="nv">enrichedText</span> <span class="p">=</span> <span class="s2">&quot;&lt;b&gt;&quot;</span> <span class="n">^</span> <span class="p">(</span><span class="nn">FontSize</span><span class="p">.</span><span class="n">withSize</span> <span class="s2">&quot;Warning&quot;</span> <span class="p">(</span><span class="n">!</span><span class="nn">FontSize</span><span class="p">.</span><span class="n">h4Size</span><span class="p">))</span> <span class="n">^</span> <span class="s2">&quot;&lt;/b&gt;&quot;</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">setMarkup</span> <span class="n">warningLabel</span> <span class="n">enrichedText</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Converting Sizes for Other Uses</strong></p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Convert to Pango scale (multiplied by 1000) *)</span>
+<span class="kr">val</span> <span class="nv">pangoSize</span> <span class="p">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">toPangoScale</span> <span class="p">(</span><span class="n">!</span><span class="nn">FontSize</span><span class="p">.</span><span class="n">bodySize</span><span class="p">)</span>  <span class="cm">(* &quot;14000&quot; *)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="best-practices">
+<h3>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Use Semantic Sizes</strong>: Always use the semantic functions (h1, h2, etc.) rather than hard-coded values to ensure consistency across the application.</p></li>
+<li><p><strong>Maintain Visual Hierarchy</strong>: Use the font size hierarchy to establish clear relationships between elements:</p>
+<ul class="simple">
+<li><p>h1, h2 for main page elements</p></li>
+<li><p>h3, h4 for sections and subsections</p></li>
+<li><p>h5, h6 for widget labels and auxiliary text</p></li>
+<li><p>body for regular paragraph text</p></li>
+<li><p>caption for small supporting text</p></li>
+</ul>
+</li>
+<li><p><strong>Consistent Approach</strong>: Always use the same pattern for similar elements; for example, all page titles should use h1, all section headings should use h2, etc.</p></li>
+<li><p><strong>Modularity</strong>: The values are stored as references, allowing for potential runtime adjustment if needed (though this should be used sparingly).</p></li>
+</ol>
+</section>
+</section>
+<section id="spacing-scale">
+<h2>Spacing Scale<a class="headerlink" href="#spacing-scale" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">SpacingScale</span></code> module implements a consistent spacing system based on a modular scale. It provides standardized values for margins, padding, and layout spacing to ensure visual consistency throughout the application.</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Use spacing values for consistent layout *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Container</span><span class="p">.</span><span class="n">setBorderWidth</span> <span class="n">container</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">medium</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Grid</span><span class="p">.</span><span class="n">setColumnSpacing</span> <span class="n">grid</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">large</span>
+</pre></div>
+</div>
+<p>Key Components:</p>
+<ul class="simple">
+<li><p><strong>Base Unit</strong>: The fundamental spacing unit (4px) from which other values are derived</p></li>
+<li><p><strong>Scale Values</strong>: <code class="docutils literal notranslate"><span class="pre">xxsmall</span></code>, <code class="docutils literal notranslate"><span class="pre">xsmall</span></code>, <code class="docutils literal notranslate"><span class="pre">small</span></code>, <code class="docutils literal notranslate"><span class="pre">medium</span></code>, <code class="docutils literal notranslate"><span class="pre">large</span></code>, <code class="docutils literal notranslate"><span class="pre">xlarge</span></code></p></li>
+<li><p><strong>Arithmetic Relationship</strong>: Each value is related to others through a consistent scale factor</p></li>
+<li><p><strong>Semantic Aliases</strong>: Named references to common spacing use cases like <code class="docutils literal notranslate"><span class="pre">inline</span></code>, <code class="docutils literal notranslate"><span class="pre">stack</span></code>, <code class="docutils literal notranslate"><span class="pre">inset</span></code>, and <code class="docutils literal notranslate"><span class="pre">section</span></code></p></li>
+</ul>
+<section id="spacing-values">
+<h3>Spacing Values<a class="headerlink" href="#spacing-values" title="Link to this heading">¶</a></h3>
+<p>The module provides a complete set of spacing values based on a 4px base unit:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>xxsmall  -&gt; 4px  - Minimal spacing for tight layouts (1× base unit)
+xsmall   -&gt; 8px  - Fine spacing for compact elements (2× base unit)
+small    -&gt; 12px - Default spacing between related items (3× base unit)
+medium   -&gt; 16px - Standard container padding (4× base unit)
+large    -&gt; 24px - Spacing between major UI sections (6× base unit)
+xlarge   -&gt; 32px - Generous spacing for visual separation (8× base unit)
+</pre></div>
+</div>
+</section>
+<section id="semantic-spacing">
+<h3>Semantic Spacing<a class="headerlink" href="#semantic-spacing" title="Link to this heading">¶</a></h3>
+<p>Beyond numeric scale values, the module offers semantic aliases for common layout needs:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>inline  -&gt; 8px  (xsmall) - Horizontal spacing between inline elements
+stack   -&gt; 12px (small)  - Vertical spacing between stacked elements
+inset   -&gt; 16px (medium) - Internal padding for container elements
+section -&gt; 24px (large)  - Separation between major content sections
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>Usage Patterns<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p><strong>Basic Spacing Application</strong></p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Apply spacing to GTK containers *)</span>
+<span class="kr">val</span> <span class="nv">container</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">small</span><span class="p">)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Container</span><span class="p">.</span><span class="n">setBorderWidth</span> <span class="n">container</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">medium</span>
+
+<span class="cm">(* Apply spacing to grid layouts *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Grid</span><span class="p">.</span><span class="n">setRowSpacing</span> <span class="n">grid</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">medium</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Grid</span><span class="p">.</span><span class="n">setColumnSpacing</span> <span class="n">grid</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">small</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Using Semantic Aliases</strong></p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Create a layout with semantic spacing *)</span>
+<span class="kr">val</span> <span class="nv">mainBox</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">stack</span><span class="p">)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Container</span><span class="p">.</span><span class="n">setBorderWidth</span> <span class="n">mainBox</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">inset</span>
+
+<span class="cm">(* Separate major sections *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Widget</span><span class="p">.</span><span class="n">setMarginBottom</span> <span class="n">sectionTitle</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">section</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Custom Spacing with get Function</strong></p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Get spacing for custom step count *)</span>
+<span class="kr">val</span> <span class="nv">customSpacing</span> <span class="p">=</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">get</span> <span class="mi">5</span>  <span class="cm">(* 20px = 5× base unit *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Widget</span><span class="p">.</span><span class="n">setMarginTop</span> <span class="n">specialWidget</span> <span class="n">customSpacing</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Combining with Other Design Tokens</strong></p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Create a card with consistent tokens *)</span>
+<span class="kr">val</span> <span class="nv">card</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">small</span><span class="p">)</span>
+<span class="kr">val</span> <span class="nv">cardLabel</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">SOME</span> <span class="s2">&quot;KPI Card&quot;</span><span class="p">)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">h4</span> <span class="n">cardLabel</span> <span class="s2">&quot;KPI Card&quot;</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Container</span><span class="p">.</span><span class="n">setBorderWidth</span> <span class="n">card</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">inset</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="id2">
+<h3>Best Practices<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Consistent Usage</strong>: Use the SpacingScale values throughout your application rather than hardcoded pixel values to maintain consistency.</p></li>
+<li><p><strong>Semantic Purpose</strong>: Select spacing values based on their semantic purpose:</p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">inline</span></code> for horizontal spacing between elements in a row</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">stack</span></code> for vertical spacing between elements in a column</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">inset</span></code> for padding inside containers and components</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">section</span></code> to separate major content sections</p></li>
+</ul>
+</li>
+<li><p><strong>Visual Rhythm</strong>: Follow consistent patterns where similar relationships use the same spacing values:</p>
+<ul class="simple">
+<li><p>Related elements: <code class="docutils literal notranslate"><span class="pre">small</span></code> or <code class="docutils literal notranslate"><span class="pre">xsmall</span></code></p></li>
+<li><p>Parent-child relationships: <code class="docutils literal notranslate"><span class="pre">medium</span></code></p></li>
+<li><p>Separate sections: <code class="docutils literal notranslate"><span class="pre">large</span></code></p></li>
+<li><p>Major page areas: <code class="docutils literal notranslate"><span class="pre">xlarge</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Responsive Considerations</strong>: Remember that spacing contributes to how components adapt to different screen sizes. Using the SpacingScale system makes it easier to adjust spacing globally if needed.</p></li>
+<li><p><strong>Extensibility</strong>: The <code class="docutils literal notranslate"><span class="pre">baseUnit</span></code> value is stored as a reference, allowing for potential adjustment if the entire spacing scale needs to be proportionally modified.</p></li>
+</ol>
+</section>
+</section>
+<section id="css-loader">
+<h2>CSS Loader<a class="headerlink" href="#css-loader" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">CssLoader</span></code> module handles the application of CSS styles to GTK widgets, enabling consistent visual theming across the ERP UI application. It provides a functional interface to GTK’s style system, bridging the gap between CSS and Standard ML.</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Apply CSS classes to widgets *)</span>
+<span class="kr">val</span> <span class="nv">card</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">small</span><span class="p">)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">card</span> <span class="s2">&quot;kpi-card&quot;</span>
+
+<span class="cm">(* Load global CSS stylesheet *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">loadStyles</span> <span class="s2">&quot;resources/css/erp-theme.css&quot;</span>
+</pre></div>
+</div>
+<p>Key Components:</p>
+<ul class="simple">
+<li><p><strong>Class Application</strong>: Functions for adding CSS classes to widgets</p></li>
+<li><p><strong>CSS Loading</strong>: Utilities for loading CSS from external files</p></li>
+<li><p><strong>Error Handling</strong>: Functional approach to CSS loading errors</p></li>
+</ul>
+<section id="core-functionality">
+<h3>Core Functionality<a class="headerlink" href="#core-functionality" title="Link to this heading">¶</a></h3>
+<p>The module provides two primary functions:</p>
+<ol class="arabic">
+<li><p><strong>loadStyles</strong>: Loads a CSS stylesheet globally for the application</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>loadStyles: string -&gt; unit
+
+# Loads CSS from the specified path and applies it to the application
+# Handles errors gracefully using functional error handling
+</pre></div>
+</div>
+</li>
+<li><p><strong>addClassToWidget</strong>: Applies a CSS class to a specific widget</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>addClassToWidget: &#39;a Widget.class -&gt; string -&gt; unit
+
+# Applies the named CSS class to the specified widget
+# Works with any widget that inherits from GTK&#39;s Widget class
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="id3">
+<h3>Usage Patterns<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p><strong>Global Stylesheet Application</strong></p>
+<p>Load application-wide styles at startup:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Load the main application stylesheet *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">loadStyles</span> <span class="s2">&quot;resources/css/erp-theme.css&quot;</span>
+
+<span class="cm">(* Load additional theme variants if needed *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">loadStyles</span> <span class="s2">&quot;resources/css/dark-theme.css&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Component-Specific Styling</strong></p>
+<p>Apply specific CSS classes to individual components:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Create widgets with specific styling *)</span>
+<span class="kr">val</span> <span class="nv">kpiCard</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">small</span><span class="p">)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">kpiCard</span> <span class="s2">&quot;kpi-card&quot;</span>
+
+<span class="kr">val</span> <span class="nv">alertBanner</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">HORIZONTAL</span><span class="p">,</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">small</span><span class="p">)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">alertBanner</span> <span class="s2">&quot;alert&quot;</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">alertBanner</span> <span class="s2">&quot;alert-warning&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Combined with Other Design Tokens</strong></p>
+<p>Use CSS classes alongside other design tokens for comprehensive styling:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Create a styled header with tokens and CSS *)</span>
+<span class="kr">val</span> <span class="nv">header</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">HORIZONTAL</span><span class="p">,</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">medium</span><span class="p">)</span>
+<span class="kr">val</span> <span class="nv">headerLabel</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">SOME</span> <span class="s2">&quot;Dashboard&quot;</span><span class="p">)</span>
+
+<span class="cm">(* Apply design tokens *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">h1</span> <span class="n">headerLabel</span> <span class="s2">&quot;Dashboard&quot;</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Widget</span><span class="p">.</span><span class="n">setMargin</span> <span class="n">header</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">inset</span>
+
+<span class="cm">(* Apply CSS classes *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">header</span> <span class="s2">&quot;page-header&quot;</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">headerLabel</span> <span class="s2">&quot;header-title&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Error Handling with Functional Programming</strong></p>
+<p>The module uses functional error handling patterns:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* CSS loading with error handling built in *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">loadStyles</span> <span class="s2">&quot;path/to/theme.css&quot;</span>
+<span class="cm">(* Errors are logged through GiraffeLog and handled gracefully *)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="css-styling-guidelines">
+<h3>CSS Styling Guidelines<a class="headerlink" href="#css-styling-guidelines" title="Link to this heading">¶</a></h3>
+<p>When creating CSS for use with the CssLoader module:</p>
+<ol class="arabic">
+<li><p><strong>Use Class Selectors</strong>: Structure your CSS to work with the class-based approach:</p>
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="p">.</span><span class="nc">kpi-card</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#ffffff</span><span class="p">;</span>
+<span class="w">    </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">    </span><span class="k">box-shadow</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">2</span><span class="kt">px</span><span class="w"> </span><span class="mi">4</span><span class="kt">px</span><span class="w"> </span><span class="nb">rgba</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="p">.</span><span class="nc">alert</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="kt">px</span><span class="w"> </span><span class="mi">16</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">    </span><span class="k">border-left</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="kt">px</span><span class="w"> </span><span class="kc">solid</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="p">.</span><span class="nc">alert-warning</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#fff3cd</span><span class="p">;</span>
+<span class="w">    </span><span class="k">border-left-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#ffc107</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Widget-Specific Styling</strong>: Target GTK widget classes when needed:</p>
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="nt">button</span><span class="p">.</span><span class="nc">primary</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#0d6efd</span><span class="p">;</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="kc">white</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">label</span><span class="p">.</span><span class="nc">header-title</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">font-weight</span><span class="p">:</span><span class="w"> </span><span class="kc">bold</span><span class="p">;</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#333333</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="id4">
+<h3>Best Practices<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Separation of Concerns</strong>: Use the CssLoader to separate visual styling from functional behavior in your SML code.</p></li>
+<li><p><strong>Consistent Class Naming</strong>: Establish a consistent naming convention for CSS classes, such as:</p>
+<ul class="simple">
+<li><p>Component name (e.g., <code class="docutils literal notranslate"><span class="pre">kpi-card</span></code>, <code class="docutils literal notranslate"><span class="pre">data-table</span></code>)</p></li>
+<li><p>Component variants (e.g., <code class="docutils literal notranslate"><span class="pre">alert-success</span></code>, <code class="docutils literal notranslate"><span class="pre">button-primary</span></code>)</p></li>
+<li><p>State indicators (e.g., <code class="docutils literal notranslate"><span class="pre">is-active</span></code>, <code class="docutils literal notranslate"><span class="pre">is-disabled</span></code>)</p></li>
+</ul>
+</li>
+<li><p><strong>Style Hierarchy</strong>: Organize your CSS files to reflect your component hierarchy:</p>
+<ul class="simple">
+<li><p>Base styles for all components</p></li>
+<li><p>Component-specific styles</p></li>
+<li><p>Page-specific overrides</p></li>
+</ul>
+</li>
+<li><p><strong>Load CSS Early</strong>: Call <code class="docutils literal notranslate"><span class="pre">loadStyles</span></code> early in your application initialization to ensure styles are applied before widgets are rendered.</p></li>
+<li><p><strong>Functional Composition</strong>: Combine CssLoader with other token systems (FontSize, SpacingScale) for complete styling:</p>
+<ul class="simple">
+<li><p>Use FontSize for typography</p></li>
+<li><p>Use SpacingScale for layout margins and padding</p></li>
+<li><p>Use CssLoader for colors, borders, and other visual properties</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="erp-theme-implementation">
+<h3>ERP Theme Implementation<a class="headerlink" href="#erp-theme-implementation" title="Link to this heading">¶</a></h3>
+<p>The ERP UI Library includes a comprehensive stylesheet (<code class="docutils literal notranslate"><span class="pre">style.css</span></code>) that implements a consistent visual language across the application. This CSS file is loaded via the CssLoader module and provides three theme variants: light (default), dark, and pastel.</p>
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="c">/* Light theme styles (default) */</span>
+<span class="nt">window</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#F8F9FA</span><span class="p">;</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#212529</span><span class="p">;</span>
+<span class="w">    </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">    </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="kc">sans-serif</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">/* Dark theme styles */</span>
+<span class="nt">window</span><span class="p">.</span><span class="nc">dark</span><span class="o">,</span><span class="w"> </span><span class="p">.</span><span class="nc">dark</span><span class="w"> </span><span class="nt">window</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#212529</span><span class="p">;</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#F8F9FA</span><span class="p">;</span>
+<span class="w">    </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="kc">sans-serif</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">/* Pastel theme styles */</span>
+<span class="nt">window</span><span class="p">.</span><span class="nc">pastel</span><span class="o">,</span><span class="w"> </span><span class="p">.</span><span class="nc">pastel</span><span class="w"> </span><span class="nt">window</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#e3f0fb</span><span class="p">;</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#3A4454</span><span class="p">;</span>
+<span class="w">    </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="kc">sans-serif</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The stylesheet provides consistent styling for common ERP UI components through a system of standardized CSS classes:</p>
+<ol class="arabic simple">
+<li><p><strong>Basic Controls</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.erp-button</span></code>, <code class="docutils literal notranslate"><span class="pre">.erp-button-primary</span></code>, <code class="docutils literal notranslate"><span class="pre">.erp-button-secondary</span></code> - Button variants</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.erp-entry</span></code>, <code class="docutils literal notranslate"><span class="pre">.erp-input</span></code> - Text input fields</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.erp-label</span></code> - Text labels</p></li>
+</ul>
+</li>
+<li><p><strong>Data Visualization</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.excel-table</span></code> - Data grid with Excel-like appearance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.excel-cell</span></code>, <code class="docutils literal notranslate"><span class="pre">.excel-header</span></code> - Table cell styling</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.excel-row-number</span></code>, <code class="docutils literal notranslate"><span class="pre">.excel-column-letter</span></code> - Row/column identifiers</p></li>
+</ul>
+</li>
+</ol>
+<p>Using this themed approach allows for consistent styling across the ERP application while enabling different visual themes to be applied universally with a single CSS class change.</p>
+<p>To apply the themes:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Load the base CSS file *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">loadStyles</span> <span class="s2">&quot;path/to/style.css&quot;</span>
+
+<span class="cm">(* Apply dark theme to the main window *)</span>
+<span class="kr">val</span> <span class="nv">mainWindow</span> <span class="p">=</span> <span class="nn">Window</span><span class="p">.</span><span class="n">new</span> <span class="nn">WindowType</span><span class="p">.</span><span class="n">TOPLEVEL</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">mainWindow</span> <span class="s2">&quot;dark&quot;</span>
+
+<span class="cm">(* Or apply pastel theme *)</span>
+<span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">mainWindow</span> <span class="s2">&quot;pastel&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="benefits-of-token-based-design">
+<h2>Benefits of Token-Based Design<a class="headerlink" href="#benefits-of-token-based-design" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Consistency</strong>: Ensures UI elements maintain a consistent look and feel</p></li>
+<li><p><strong>Maintainability</strong>: Changes to design values can be made in one place</p></li>
+<li><p><strong>Scalability</strong>: Easy to extend with new token types as needed</p></li>
+<li><p><strong>Abstraction</strong>: Hides implementation details of styling from component logic</p></li>
+<li><p><strong>Functional Purity</strong>: Promotes immutability and referential transparency</p></li>
+</ol>
+</section>
+<section id="implementation-details">
+<h2>Implementation Details<a class="headerlink" href="#implementation-details" title="Link to this heading">¶</a></h2>
+<p>The token system demonstrates several functional programming concepts:</p>
+<ul>
+<li><p><strong>Immutable References</strong>: Values are stored as <code class="docutils literal notranslate"><span class="pre">ref</span></code> types, preserving the ability to update them system-wide while maintaining local immutability. For example, in FontSize.sml:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="kr">val</span> <span class="nv">h1Size</span> <span class="p">=</span> <span class="n">ref</span> <span class="mf">32.0</span>  <span class="cm">(* Stored as a reference *)</span>
+<span class="kr">val</span> <span class="nv">h2Size</span> <span class="p">=</span> <span class="n">ref</span> <span class="mf">28.0</span>
+</pre></div>
+</div>
+<p>This allows potential theme changes while ensuring that individual component usages remain pure.</p>
+</li>
+<li><p><strong>Pure Functions</strong>: Token operations don’t produce side effects, focusing only on their input-output relationships. For example, in FontSize.sml:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Pure function converting size to Pango scale *)</span>
+<span class="kr">fun</span> <span class="nf">toPangoScale</span> <span class="n">size</span> <span class="p">=</span> <span class="nn">Int</span><span class="p">.</span><span class="n">toString</span> <span class="p">(</span><span class="nn">Real</span><span class="p">.</span><span class="n">round</span> <span class="p">(</span><span class="n">size</span> <span class="n">*</span> <span class="mf">1000.0</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Higher-Order Functions</strong>: Token application functions take widgets and functions as parameters. For example, in CssLoader.sml:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Higher order function for applying styles *)</span>
+<span class="kr">fun</span> <span class="nf">addClassToWidget</span> <span class="n">widget</span> <span class="n">className</span> <span class="p">=</span>
+  <span class="kr">let</span>
+    <span class="kr">val</span> <span class="nv">context</span> <span class="p">=</span> <span class="nn">Widget</span><span class="p">.</span><span class="n">getStyleContext</span> <span class="n">widget</span>
+  <span class="kr">in</span>
+    <span class="nn">StyleContext</span><span class="p">.</span><span class="n">addClass</span> <span class="n">context</span> <span class="n">className</span>
+  <span class="kr">end</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Composition</strong>: Tokens can be combined to create more complex styles through functional composition. For example, in SpacingScale.sml:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Building more complex spaces through composition *)</span>
+<span class="kr">val</span> <span class="nv">section</span> <span class="p">=</span> <span class="n">large</span>     <span class="cm">(* 24px = 6× base unit *)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="example-combining-tokens">
+<h2>Example: Combining Tokens<a class="headerlink" href="#example-combining-tokens" title="Link to this heading">¶</a></h2>
+<p>The real power of the token system emerges when combining multiple token systems to create cohesive UI components. Here’s a complete example of creating a styled KPI card component using all three token systems:</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Create a KPI Card component with consistent styling *)</span>
+<span class="kr">fun</span> <span class="nf">createKpiCard</span> <span class="p">{</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">trend</span><span class="p">}</span> <span class="p">=</span>
+  <span class="kr">let</span>
+    <span class="cm">(* Create the container box with proper spacing *)</span>
+    <span class="kr">val</span> <span class="nv">card</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">small</span><span class="p">)</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Container</span><span class="p">.</span><span class="n">setBorderWidth</span> <span class="n">card</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">inset</span>
+
+    <span class="cm">(* Apply CSS classes for visual styling *)</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">card</span> <span class="s2">&quot;kpi-card&quot;</span>
+
+    <span class="cm">(* Create and style the label *)</span>
+    <span class="kr">val</span> <span class="nv">labelWidget</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">SOME</span> <span class="n">label</span><span class="p">)</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">labelWidget</span> <span class="s2">&quot;kpi-label&quot;</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">h5</span> <span class="n">labelWidget</span> <span class="n">label</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Widget</span><span class="p">.</span><span class="n">setHalign</span> <span class="n">labelWidget</span> <span class="nn">Align</span><span class="p">.</span><span class="n">START</span>
+
+    <span class="cm">(* Create and style the value with larger font *)</span>
+    <span class="kr">val</span> <span class="nv">valueWidget</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">SOME</span> <span class="n">value</span><span class="p">)</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">valueWidget</span> <span class="s2">&quot;kpi-value&quot;</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">h2</span> <span class="n">valueWidget</span> <span class="n">value</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Widget</span><span class="p">.</span><span class="n">setHalign</span> <span class="n">valueWidget</span> <span class="nn">Align</span><span class="p">.</span><span class="n">START</span>
+
+    <span class="cm">(* Add optional trend indicator if provided *)</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="kr">case</span> <span class="n">trend</span> <span class="kr">of</span>
+               <span class="n">NONE</span> <span class="p">=&gt;</span> <span class="p">()</span>
+             <span class="n">|</span> <span class="n">SOME</span> <span class="n">trendText</span> <span class="p">=&gt;</span>
+                 <span class="kr">let</span>
+                   <span class="kr">val</span> <span class="nv">trendWidget</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">SOME</span> <span class="n">trendText</span><span class="p">)</span>
+                   <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">trendWidget</span> <span class="s2">&quot;kpi-trend&quot;</span>
+                   <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">caption</span> <span class="n">trendWidget</span> <span class="n">trendText</span>
+                   <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Widget</span><span class="p">.</span><span class="n">setHalign</span> <span class="n">trendWidget</span> <span class="nn">Align</span><span class="p">.</span><span class="n">START</span>
+                 <span class="kr">in</span>
+                   <span class="nn">Box</span><span class="p">.</span><span class="n">packEnd</span> <span class="n">card</span> <span class="p">(</span><span class="n">trendWidget</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                 <span class="kr">end</span>
+
+    <span class="cm">(* Pack widgets into container *)</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">packStart</span> <span class="n">card</span> <span class="p">(</span><span class="n">labelWidget</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">packStart</span> <span class="n">card</span> <span class="p">(</span><span class="n">valueWidget</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="kr">in</span>
+    <span class="n">card</span>
+  <span class="kr">end</span>
+</pre></div>
+</div>
+<p>This example demonstrates:</p>
+<ol class="arabic simple">
+<li><p><strong>Consistent Spacing</strong>: Using <code class="docutils literal notranslate"><span class="pre">SpacingScale.small</span></code> for vertical spacing and <code class="docutils literal notranslate"><span class="pre">SpacingScale.inset</span></code> for padding</p></li>
+<li><p><strong>Typography Hierarchy</strong>: Using <code class="docutils literal notranslate"><span class="pre">FontSize.h2</span></code> for the value, <code class="docutils literal notranslate"><span class="pre">FontSize.h5</span></code> for the label, and <code class="docutils literal notranslate"><span class="pre">FontSize.caption</span></code> for the trend</p></li>
+<li><p><strong>Visual Styling</strong>: Using CSS classes (<code class="docutils literal notranslate"><span class="pre">kpi-card</span></code>, <code class="docutils literal notranslate"><span class="pre">kpi-label</span></code>, etc.) for colors, backgrounds, and borders</p></li>
+<li><p><strong>Functional Pattern</strong>: Using a pure function that takes parameters and returns a styled widget</p></li>
+</ol>
+<p>The complementary CSS might look like:</p>
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="p">.</span><span class="nc">kpi-card</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#ffffff</span><span class="p">;</span>
+<span class="w">    </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">    </span><span class="k">box-shadow</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">2</span><span class="kt">px</span><span class="w"> </span><span class="mi">4</span><span class="kt">px</span><span class="w"> </span><span class="nb">rgba</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="p">.</span><span class="nc">kpi-value</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#0D6EFD</span><span class="p">;</span>
+<span class="w">    </span><span class="k">font-weight</span><span class="p">:</span><span class="w"> </span><span class="mi">700</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="p">.</span><span class="nc">kpi-trend</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#198754</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This approach demonstrates how tokens enable consistent, maintainable UI components through functional composition.</p>
+<div class="highlight-sml notranslate"><div class="highlight"><pre><span></span><span class="cm">(* Create a card with consistent padding and typography *)</span>
+<span class="kr">fun</span> <span class="nf">createInfoCard</span> <span class="n">title</span> <span class="n">content</span> <span class="p">=</span>
+  <span class="kr">let</span>
+    <span class="kr">val</span> <span class="nv">cardBox</span> <span class="p">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">small</span><span class="p">)</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Container</span><span class="p">.</span><span class="n">setBorderWidth</span> <span class="n">cardBox</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">medium</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">CssLoader</span><span class="p">.</span><span class="n">addClassToWidget</span> <span class="n">cardBox</span> <span class="s2">&quot;info-card&quot;</span>
+
+    <span class="kr">val</span> <span class="nv">titleLabel</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">SOME</span> <span class="n">title</span><span class="p">)</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">h4</span> <span class="n">titleLabel</span> <span class="n">title</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Widget</span><span class="p">.</span><span class="n">setHalign</span> <span class="n">titleLabel</span> <span class="nn">Align</span><span class="p">.</span><span class="n">START</span>
+
+    <span class="kr">val</span> <span class="nv">contentLabel</span> <span class="p">=</span> <span class="nn">Label</span><span class="p">.</span><span class="n">new</span> <span class="p">(</span><span class="n">SOME</span> <span class="n">content</span><span class="p">)</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">FontSize</span><span class="p">.</span><span class="n">body</span> <span class="n">contentLabel</span> <span class="n">content</span>
+
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">packStart</span> <span class="n">cardBox</span> <span class="p">(</span><span class="n">titleLabel</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="n">false</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="kr">val</span> <span class="p">()</span> <span class="nv">=</span> <span class="nn">Box</span><span class="p">.</span><span class="n">packStart</span> <span class="n">cardBox</span> <span class="p">(</span><span class="n">contentLabel</span><span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="nn">SpacingScale</span><span class="p">.</span><span class="n">small</span><span class="p">)</span>
+  <span class="kr">in</span>
+    <span class="n">cardBox</span>
+  <span class="kr">end</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SML Dissertation Project</a></h1>
+
+
+
+
+
+
+
+
+<div class="sphinxsidebarwrapper">
+    <h3>On this page</h3>
+    <ul>
+<li><a class="reference internal" href="#">Design Tokens</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a><ul>
+<li><a class="reference internal" href="#font-size-hierarchy">Font Size Hierarchy</a></li>
+<li><a class="reference internal" href="#usage-patterns">Usage Patterns</a></li>
+<li><a class="reference internal" href="#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#spacing-scale">Spacing Scale</a><ul>
+<li><a class="reference internal" href="#spacing-values">Spacing Values</a></li>
+<li><a class="reference internal" href="#semantic-spacing">Semantic Spacing</a></li>
+<li><a class="reference internal" href="#id1">Usage Patterns</a></li>
+<li><a class="reference internal" href="#id2">Best Practices</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#css-loader">CSS Loader</a><ul>
+<li><a class="reference internal" href="#core-functionality">Core Functionality</a></li>
+<li><a class="reference internal" href="#id3">Usage Patterns</a></li>
+<li><a class="reference internal" href="#css-styling-guidelines">CSS Styling Guidelines</a></li>
+<li><a class="reference internal" href="#id4">Best Practices</a></li>
+<li><a class="reference internal" href="#erp-theme-implementation">ERP Theme Implementation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#benefits-of-token-based-design">Benefits of Token-Based Design</a></li>
+<li><a class="reference internal" href="#implementation-details">Implementation Details</a></li>
+<li><a class="reference internal" href="#example-combining-tokens">Example: Combining Tokens</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Navigation</h3>
+  <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage Guide</a></li>
+  </ul>
+  <p class="caption" role="heading"><span class="caption-text">Library Components</span></p>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="#">Design Tokens</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="layout_components.html">Layout Components</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="dashboard_components.html">Dashboard Components</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="pages.html">Pages</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+  </ul>
+  <ul>
+    <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+  </ul>
+</div><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="usage.html" title="previous chapter">Usage Guide</a></li>
+      <li>Next: <a href="layout_components.html" title="next chapter">Layout Components</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/tokens.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

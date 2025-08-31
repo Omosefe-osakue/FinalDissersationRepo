@@ -1,0 +1,541 @@
+Pages
+=====
+
+Overview
+--------
+
+The Pages module provides a framework for creating complete application screens in an ERP system using Standard ML and functional programming principles. Instead of requiring developers to build each page from scratch, the library offers a collection of pre-built templates and a flexible composition system.
+
+This documentation will guide you through:
+
+1. How to create any page using the BasePage pattern
+2. Sample page implementations you can customize
+3. Component integration patterns for building rich interfaces
+
+Creating Pages: The BasePage Pattern
+-----------------------------------
+
+All pages in the ERP UI Library follow a consistent structure created using the ``BasePage`` functor. This powerful pattern allows you to create standardized pages while customizing only what's necessary.
+
+.. .. figure:: images/page_structure.png
+..    :width: 80%
+..    :align: center
+   
+..    *Figure 1: Standard page structure with header, navigation, content area, and footer*
+
+**Creating a New Page in 3 Steps:**
+
+1. **Define your page using the BasePage functor**
+
+   .. code-block:: sml
+
+       (* Step 1: Define your page structure using the BasePage functor *)
+       structure MyCustomPage = BasePage(struct 
+           val title = "My Custom Page" 
+       end)
+
+2. **Create the page instance and get content container**
+
+   .. code-block:: sml
+
+       (* Step 2: Create the page and get the content container *)
+       val (pageWidget, contentContainer) = MyCustomPage.create {
+           stack = navigationStack,   (* GTK Stack for navigation *)
+           menuItems = SOME [         (* Optional navigation menu items *)
+               ("Dashboard", "dashboard"),
+               ("Inventory", "inventory"),
+               ("Settings", "settings"),
+               ("Logout", "login")
+           ]
+       }
+
+3. **Add your custom content to the container**
+
+   .. code-block:: sml
+
+       (* Step 3: Add your custom content to the container *)
+       (* Create your content widgets *)
+       val titleLabel = Label.newWithMarkup "<b>Welcome to My Custom Page</b>"
+       val () = Widget.setHalign titleLabel Align.START
+       val () = Widget.setMarginBottom titleLabel SpacingScale.small
+       
+       val infoPanel = Box.new (Orientation.VERTICAL, SpacingScale.small)
+       val () = Container.setBorderWidth infoPanel SpacingScale.inset
+       val () = Widget.setMarginTop infoPanel SpacingScale.medium
+       
+       (* Add to content container *)
+       val () = Box.packStart contentContainer (titleLabel, false, false, 0)
+       val () = Box.packStart contentContainer (infoPanel, true, true, 0)
+
+**That's it!** Your page now has:
+
+- Professional header with logo and user information
+- Navigation menu with standardized links
+- Scrollable content area with your custom content
+- Consistent footer with copyright
+
+**Standard Page Properties**
+
+Each page created with BasePage automatically includes:
+
+- **Header**: Logo, page title, and username display
+- **Navigation**: Optional menu bar with application navigation
+- **Content Area**: Scrollable container for page-specific widgets
+- **Footer**: Copyright and version information
+
+.. note::
+   The BasePage functor is especially powerful because it helps enforce consistency across your application while allowing for specific customization.
+
+Page Templates
+-------------
+
+The library provides several pre-built page templates you can use as starting points for your ERP application. These pages demonstrate common patterns and components assembled for specific business functions.
+
+LoginPage: Authentication Template
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. code-block:: sml
+
+    (******************************************************************************
+     * BasePage: Functor for constructing standardized ERP UI pages.
+     *
+     * Parameters:
+     *   Inputs.title : string - The title to display in the header.
+     *
+     * Usage:
+     *   structure MyPage = BasePage(struct val title = "Dashboard" end)
+     *
+     * Provides:
+     *   val create : {stack, menuItems} -> Gtk.Box.t * Gtk.Box.t
+     *****************************************************************************)
+    functor BasePage (Inputs: sig 
+        val title : string 
+      end) : PAGE = struct
+
+The BasePage functor returns a module that conforms to the PAGE signature:
+
+.. code-block:: sml
+
+    signature PAGE = sig
+      val create : { stack : Gtk.Stack.t, menuItems : (string * string) list option } -> Gtk.Box.t * Gtk.Box.t 
+    end
+
+Creating a Page Using BasePage
+-----------------------------
+
+Any page using BasePage receives a standard layout, with the ability to customize navigation and content. The following real example from ``DashboardPage.sml`` shows how to apply the BasePage functor:
+
+.. code-block:: sml
+
+    (* Apply the BasePage functor *) 
+    structure DashboardBase = BasePage(struct val title = "Dashboard" end)
+
+    (* Updated signature to match PAGE signature *) 
+    fun create {stack: Gtk.Stack.t, menuItems: (string * string) list option} =
+      let
+        (* Use the passed menuItems for BasePage *) 
+        val (basePage, contentBox) = DashboardBase.create{
+          stack = stack, 
+          menuItems = menuItems
+        }
+
+        (* Add dashboard-specific content to contentBox *)
+        ...
+      in
+        (basePage, contentBox)
+      end
+
+Navigation in BasePage
+--------------------
+
+The BasePage functor handles navigation between pages using the provided menu items. From ``BasePage.sml``:
+
+.. code-block:: sml
+
+    (* Creates menu bar *)
+    fun createMenuBar (stack : Gtk.Stack.t, items : (string * string) list) =
+      let
+        val menuBarBox = Box.new (Orientation.HORIZONTAL, SpacingScale.small)
+        val () = Container.setBorderWidth menuBarBox SpacingScale.xsmall
+        
+        fun createMenuButton (label, pageName) =
+          let
+            val button = Button.newWithLabel label
+            val () = Button.setRelief button ReliefStyle.NONE
+            val () = Widget.setMarginStart button SpacingScale.small
+            val () = Widget.setMarginEnd button SpacingScale.small
+            
+            val _ = Signal.connect button (Button.clickedSig, fn _ =>
+              let
+                val () = print ("Navigating to " ^ pageName ^ "\n")
+                val () = Stack.setVisibleChildName stack pageName
+              in
+                ()
+              end)
+          in
+            button
+          end
+
+LoginPage Implementation
+----------------------
+
+The ``LoginPage`` provides authentication functionality. From ``LoginPage.sml``:
+
+.. code-block:: sml
+
+    structure LoginPage = struct
+
+      val validUsers = [("admin", "password")]
+
+      fun authenticate (username, password) =
+        List.exists (fn (u, p) => u = username andalso p = password) validUsers
+
+      (* Create the base page here outside the create function*)
+      structure LoginPageBase = BasePage(struct val title = "Login" end)
+
+      fun create {stack: Gtk.Stack.t} =
+        let
+          open Gtk
+          
+          val (basePage, contentBox) = LoginPageBase.create{ stack = stack, menuItems = NONE }
+          
+          val loginForm = createLoginForm stack
+          
+          val () = Box.packStart contentBox (loginForm, true, true, 0)
+        in
+          basePage 
+        end
+    end
+
+The login form includes username and password fields with validation:
+
+.. code-block:: sml
+
+    val _ = Signal.connect loginButton (Button.clickedSig, fn _ => 
+      let
+        val username = Entry.getText usernameEntry
+        val password = Entry.getText passwordEntry
+        val _ = print ("Login attempt: " ^ username ^ "\n")
+        
+        val loginSuccess = authenticate (username, password) 
+        
+        val () = if loginSuccess then
+          (   
+            AppState.setCurrentUser username;
+            Stack.setVisibleChildName stack "dashboard";
+            print "Navigating to Dashboard...\n"
+          )
+        else 
+          (
+            ErrorDialog.create {
+              title = "Login Error",
+              message = "Invalid username or password."
+            }
+          )
+      in
+        ()
+      end)
+
+DashboardPage Implementation
+--------------------------
+
+The ``DashboardPage`` displays key performance indicators in a grid layout. From ``DashboardPage.sml``:
+
+.. code-block:: sml
+
+    (* Create KPI Cards using the reusable component *) 
+    val kpiSales = KPICard.create {label = "Today's Sales", value = "$12,345", trend = SOME "+12% vs last month"}
+    val kpiOrders = KPICard.create {label = "Open Orders", value = "8", trend = NONE}
+    val kpiInventory = KPICard.create {label = "Items Low Stock", value = "3", trend = NONE}
+    val kpiRevenue = KPICard.create {label = "Monthly Revenue", value = "$45,876", trend = SOME "+5% vs last month"}
+    val kpiCustomers = KPICard.create {label = "New Customers", value = "12", trend = NONE}
+    val kpiShipment = KPICard.create {label = "Shipment", value = "25", trend = NONE}
+    
+    (* Add KPI cards to the grid - Use correct tuple syntax and center them *) 
+    val () = Grid.attach dashboardGrid (kpiSales, 0, 0, 1, 1)
+    val () = Grid.attach dashboardGrid (kpiOrders, 1, 0, 1, 1)
+    val () = Grid.attach dashboardGrid (kpiInventory, 2, 0, 1, 1)
+    val () = Grid.attach dashboardGrid (kpiRevenue, 0, 1, 1, 1)
+    val () = Grid.attach dashboardGrid (kpiCustomers, 1, 1, 1, 1)
+    val () = Grid.attach dashboardGrid (kpiShipment, 2, 1, 1, 1)
+
+The dashboard also includes navigation buttons to other parts of the application:
+
+.. code-block:: sml
+
+    (* Sales Order Button *)
+    val salesOrderBtn = Button.newWithLabel "Sales Order"
+    val _ = Widget.setSizeRequest salesOrderBtn (180, 36)
+    val buttonRow = LeftAlignedButtonRow.create [salesOrderBtn]
+
+    val () = Box.packStart contentBox (buttonRow, false, false, 0)
+    
+    (* Connect the button to navigation *)
+    val _ = Signal.connect salesOrderBtn (Button.clickedSig, fn _ =>
+      let
+        val () = print ("Navigating to Sales Order Page\n")
+        val () = Stack.setVisibleChildName stack "salesorder"
+      in
+        ()
+      end)
+
+InventoryPage Implementation
+--------------------------
+
+The ``InventoryPage`` provides a complete data management interface with a dynamic table for inventory items. From ``InventoryPage.sml``:
+
+.. code-block:: sml
+
+    (* Apply BasePage functor *)
+    structure InventoryBase = BasePage(struct val title = "Inventory" end)
+
+    fun create {stack : Gtk.Stack.t, menuItems : (string * string) list option} =
+      let
+        (* Base page and content container *)
+        val (basePage, contentBox) = InventoryBase.create {
+          stack = stack,
+          menuItems = menuItems
+        }
+
+A key feature of the InventoryPage is the table that regenerates when data is modified. This demonstrates functional state management in UI development:
+
+.. code-block:: sml
+
+    (* Function to regenerate the entire table when data changes *)
+    fun refreshTable () =
+      let
+        val oldGrid = !tableGrid
+        val () = Container.remove tableScrollWindow oldGrid
+        
+        val newGrid = Grid.new ()
+        (* ... table population code ... *)
+        val () = CssLoader.addClassToWidget newGrid "excel-table-border"
+        val () = Container.add tableScrollWindow newGrid
+        val () = Widget.showAll newGrid
+      in
+        ()
+      end
+
+The InventoryPage implements CRUD operations through a modal dialog for adding inventory items:
+
+.. code-block:: sml
+
+    val _ = Signal.connect addBtn (Button.clickedSig, fn _ =>
+      let 
+        val dialog = Dialog.new ()
+        val _ = Window.setTitle dialog "Add Inventory Item"
+        val _ = Window.setDefaultSize dialog (400, 300)
+        val _ = Dialog.addButton dialog ("Cancel", LargeInt.fromInt (IntInf.toInt ResponseType.CANCEL))
+        val _ = Dialog.addButton dialog ("Add", LargeInt.fromInt (IntInf.toInt ResponseType.OK))
+        val contentArea = Dialog.getContentArea dialog
+
+        val nameLabel = Label.new (SOME "Name:")
+        val () = Widget.setHalign nameLabel Align.START
+        val () = Box.packStart contentArea (nameLabel, false, false, SpacingScale.xxsmall)
+        val nameEntry = Entry.new ()
+        val () = Widget.setSizeRequest nameEntry (200, 0)
+        val () = Box.packStart contentArea (nameEntry, false, false, SpacingScale.xxsmall)
+
+        (* ... other fields ... *)
+
+        (* Process dialog response *)
+        val () = if resp = ResponseType.OK then
+          let
+            val n = Entry.getText nameEntry
+            val s = Entry.getText skuEntry
+            val qText = Entry.getText qtyEntry
+            val pText = Entry.getText priceEntry
+            
+            (* ... validation code ... *)
+            
+            (* Only add if we have required fields and valid numeric values *)
+            val () = if n <> "" andalso s <> "" andalso isValidInt qText andalso isValidReal pText then
+              let
+                val newList = !inventoryItemsRef @ [(n,s,q,p)]
+                val () = inventoryItemsRef := newList
+                val () = refreshTable ()
+              in () end
+            else
+              (
+                ErrorDialog.create {
+                  title = "Input Error",
+                  message = "Please enter valid values. Quantity must be an integer and Price must be a number."
+                }
+              )
+          in () end
+        else ()
+      in () end)
+
+The InventoryPage also provides functionality to remove selected items:
+
+.. code-block:: sml
+
+    val removeButton = Button.newWithLabel "Remove Selected"
+    val _ = Signal.connect removeButton (Button.clickedSig, fn _ =>
+        let
+            val selectedRow = TableUtils.getSelectedRow inventoryTable
+            val () = case selectedRow of
+                SOME rowIndex => (
+                    TableUtils.removeTableRow inventoryTable rowIndex;
+                    print ("Removed inventory item at row " ^ Int.toString rowIndex ^ "\n")
+                )
+              | NONE => print "No row selected to remove\n"
+        in
+            ()
+        end
+    )
+
+SalesOrderPage Implementation
+---------------------------
+
+The ``SalesOrderPage`` provides functionality for viewing and managing customer orders. From ``SalesOrderPage.sml``:
+
+.. code-block:: sml
+
+    structure SalesOrderPage :> PAGE = struct
+      structure Gtk = Gtk
+      open Gtk
+
+      structure SalesOrderBase = BasePage(struct val title = "Sales Orders" end)
+
+      fun create {stack: Gtk.Stack.t, menuItems: (string * string) list option} =
+        let
+          val (basePage, contentBox) = SalesOrderBase.create{
+            stack = stack, 
+            menuItems = menuItems
+          }
+
+The SalesOrderPage implements a table for displaying order data:
+
+.. code-block:: sml
+
+      (* --- Sales Order Specific Content --- *) 
+      val frame = Frame.new(NONE)
+      val () = Widget.setMarginTop frame SpacingScale.medium
+      val () = Widget.setMarginStart frame SpacingScale.large
+      val () = Widget.setMarginEnd frame SpacingScale.large
+      val () = Widget.setMarginBottom frame SpacingScale.large
+      
+      val tableBox = Box.new (Orientation.VERTICAL, 0)
+      val () = Container.add frame tableBox
+      
+      val headerRow = Box.new (Orientation.HORIZONTAL, 0)
+      val () = Box.setHomogeneous headerRow true
+      
+      val () = List.app (fn text => 
+        let
+          val label = Label.new(SOME text)
+          val () = Label.setMarkup label ("<b>" ^ text ^ "</b>")
+          val () = Widget.setHalign label Align.START
+          val () = Widget.setMarginStart label SpacingScale.small
+          val () = Widget.setMarginEnd label SpacingScale.small
+          val () = Widget.setMarginTop label SpacingScale.small
+          val () = Widget.setMarginBottom label SpacingScale.small
+          val () = Box.packStart headerRow (label, true, true, 0)
+        in
+          ()
+        end) (SalesOrderData.headers)
+
+The SalesOrderPage also provides navigation back to the dashboard:
+
+.. code-block:: sml
+
+      val backButton = Button.newWithLabel "Back to Dashboard"
+      val buttonRow = LeftAlignedButtonRow.create [backButton]
+      
+      val _ = Signal.connect backButton (Button.clickedSig, fn _ =>
+        let
+          val () = print ("Navigating back to Dashboard\n")
+          val () = Stack.setVisibleChildName stack "dashboard"
+        in
+          ()
+        end)
+
+Customizing Page Templates
+------------------------
+
+You can customize any of the provided page templates for your specific requirements:
+
+1. **Component Replacement**: Replace standard components with custom versions
+2. **Content Adaptation**: Modify the content layout and widgets
+3. **Behavior Extension**: Add additional functionality to standard pages
+
+**Example: Customizing the Login Page**
+
+.. code-block:: sml
+
+    (* Create a custom login page with branding *)
+    structure CustomLoginPage = struct
+        (* Reuse core login functionality *)
+        fun create {stack} =
+            let
+                (* Create standard login page *)
+                val basePage = LoginPage.create {stack = stack}
+                
+                (* Add custom branding *)
+                val brandingBox = Box.new (Orientation.VERTICAL, 0)
+                val brandingLabel = Label.new (SOME "CustomCorp ERP")
+                val () = Label.setMarkup brandingLabel "<span size='xx-large'>CustomCorp ERP</span>"
+                val () = Box.packStart brandingBox (brandingLabel, false, false, SpacingScale.large)
+                
+                (* Insert at top of page *)
+                val () = Box.reorderChild basePage (brandingBox, 0)
+            in
+                basePage
+            end
+    end
+
+Navigation Architecture
+---------------------
+
+The ERP UI Library uses GTK's Stack widget for navigation between pages, combined with a functional approach to page transitions:
+
+.. code-block:: sml
+
+    (* Set up navigation stack *)
+    val navigationStack = Stack.new ()
+    val () = Stack.setTransitionType navigationStack StackTransitionType.SLIDE_LEFT_RIGHT
+
+    (* Create application pages *)
+    val loginPage = LoginPage.create {stack = navigationStack}
+    val (dashboardPage, _) = DashboardPage.create {stack = navigationStack, ...}
+    
+    (* Add pages to navigation stack *)
+    val () = Stack.addNamed navigationStack (loginPage, "login")
+    val () = Stack.addNamed navigationStack (dashboardPage, "dashboard")
+    
+    (* Navigation function *)
+    fun navigateTo pageName = Stack.setVisibleChildName navigationStack pageName
+    
+    (* Navigate programmatically *)
+    val () = navigateTo "login"
+    
+    (* Or connect to a button click *)
+    val _ = Signal.connect logoutButton (Button.clickedSig, fn _ => navigateTo "login")
+
+Conclusion
+----------
+
+The Pages module demonstrates how functional programming principles can effectively structure complex UI components:
+
+1. **Functors for Templating**: BasePage functor creates consistent pages
+2. **Composition**: Building complex pages by composing smaller components
+3. **Separation of Concerns**: Clear distinction between structure and content
+4. **Type Safety**: Using SML's type system to ensure interface consistency
+
+Key Navigation Concepts:
+
+1. **Declarative Transitions**: Page transitions are handled through declarative function calls
+2. **Stack-Based Architecture**: Pages are managed in a stack for efficient memory usage
+3. **Named Pages**: Pages are referenced by name for easy navigation
+4. **Clean Separation**: Navigation logic is separated from page content
+
+Best Practices
+------------
+
+When developing with the Pages module:
+
+1. **Use the BasePage Functor**: Start with the BasePage functor to ensure consistency
+2. **Separate Content Creation**: Keep page-specific content creation separate from the base page
+3. **Handle Events Functionally**: Use higher-order functions for event handling
+4. **Maintain Immutability**: Don't modify page components after creation
+5. **Follow Navigation Patterns**: Use consistent navigation methods between pages

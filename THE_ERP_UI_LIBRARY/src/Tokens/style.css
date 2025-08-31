@@ -1,0 +1,267 @@
+/*
+*******************************************************************************
+* style.css: Central stylesheet for ERP UI theming and component styling
+*
+* This file defines the visual appearance for the ERP application UI, including:
+*   - Light, dark, and pastel theme support for GTK/Giraffe-based UIs
+*   - ERP-specific classes for buttons, labels, entries, grids, and cards
+*   - Consistent spacing, typography, and color conventions across the app
+*
+* Usage:
+*   - Loaded globally via CssLoader.sml in the ERP UI application
+*   - Apply ERP classes (e.g., .erp-button, .erp-label, .excel-grid) to widgets for standardized look
+*
+* Conventions:
+*   - Class names prefixed with 'erp-' for ERP-specific components
+*   - Theme-specific rules grouped by selector (window, .erp-button-primary, etc.)
+*   - Includes table/grid styling for Excel-like inventory and dashboard panels
+*
+* Author: Omosefe Osakue
+* Date: 2025-05-09
+*******************************************************************************
+*/
+
+/* Default styles */
+
+/* Light theme styles (default) */
+window {
+    background-color: #F8F9FA;
+    color: #212529;
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+label.erp-label {
+    font-size: 12px;
+    color: #6C757D;
+}
+
+entry.erp-entry, entry.erp-input {
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid #DEE2E6;
+    background-color: #FFFFFF;
+    color: #212529;
+    min-height: 36px;
+}
+
+entry.erp-entry:focus, entry.erp-input:focus {
+    border-color: #0D6EFD;
+    box-shadow: 0 0 0 2px #0D6EFD;
+    outline-style: solid;
+    outline-width: 2px;
+    outline-color: #0D6EFD;
+    outline-offset: 2px;
+}
+
+button.erp-button {
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-style: solid;
+    font-weight: 500;
+    min-height: 36px;
+}
+
+button.erp-button-primary {
+    background-color: #0D6EFD;
+    color: #FFFFFF;
+    border-color: #0D6EFD;
+}
+
+button.erp-button-secondary {
+    background-color: #6C757D;
+    color: #FFFFFF;
+    border-color: #6C757D;
+}
+
+button.erp-button-outline {
+    background-color: transparent;
+    color: #0D6EFD;
+    border-color: #0D6EFD;
+}
+
+/* Dark theme styles */
+window.dark, .dark window {
+    background-color: #212529;
+    color: #F8F9FA;
+    font-family: sans-serif;
+}
+.dark label.erp-label {
+    color: #ADB5BD;
+}
+.dark entry.erp-entry, .dark entry.erp-input {
+    background-color: #343A40;
+    color: #F8F9FA;
+    border-color: #495057;
+}
+.dark entry.erp-entry:focus, .dark entry.erp-input:focus {
+    border-color: #0D6EFD;
+    box-shadow: 0 0 0 2px #0D6EFD;
+    outline-color: #0D6EFD;
+}
+.dark button.erp-button-primary {
+    background-color: #0D6EFD;
+    color: #FFFFFF;
+    border-color: #0D6EFD;
+}
+.dark button.erp-button-secondary {
+    background-color: #6C757D;
+    color: #FFFFFF;
+    border-color: #6C757D;
+}
+.dark button.erp-button-outline {
+    background-color: transparent;
+    color: #0D6EFD;
+    border-color: #0D6EFD;
+}
+
+
+/* CSS variables for Pastel theme */
+window.pastel, .pastel window {
+    background-color: #e3f0fb;
+    color: #3A4454;
+    font-family: sans-serif;
+}
+.pastel label.erp-label {
+    color: #8A94A2;
+}
+.pastel entry.erp-entry, .pastel entry.erp-input {
+    background-color: #FFFFFF;
+    color: #3A4454;
+    border-color: #D3E0DC;
+}
+.pastel entry.erp-entry:focus, .pastel entry.erp-input:focus {
+    border-color: #70C1B3;
+    box-shadow: 0 0 0 2px #70C1B3;
+    outline-color: #70C1B3;
+}
+.pastel button.erp-button-primary {
+    background-color: #70C1B3;
+    color: #FFFFFF;
+    border-color: #70C1B3;
+}
+.pastel button.erp-button-secondary {
+    background-color: #B2DBBF;
+    color: #3A4454;
+    border-color: #B2DBBF;
+}
+.pastel button.erp-button-outline {
+    background-color: transparent;
+    color: #70C1B3;
+    border-color: #70C1B3;
+}
+
+
+/* Buttons */
+button.erp-button {
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-style: solid;
+    font-weight: 500;
+    min-height: 36px;
+}
+
+button.erp-button-primary {
+    background-color: #0D6EFD;
+    color: #FFFFFF;
+    border-color: #0D6EFD;
+}
+
+button.erp-button-secondary {
+    background-color: #6C757D;
+    color: #FFFFFF;
+    border-color: #6C757D;
+}
+
+button.erp-button-outline {
+    background-color: transparent;
+    color: #0D6EFD;
+    border-color: #0D6EFD;
+}
+
+/* Input fields */
+/* 'input' selector is not supported in GTK CSS, use 'entry' for text fields */
+entry.erp-input {
+    font-size: 14px;
+    padding: 8px 16px;
+}
+
+/* Entries */
+entry.erp-entry {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid #DEE2E6;
+    background-color: #FFFFFF;
+    color: #212529;
+    min-height: 36px;
+}
+
+entry.erp-entry:focus {
+    border-color: #0D6EFD;
+    box-shadow: 0 0 0 2px #0D6EFD;
+    outline-style: solid;
+    outline-width: 2px;
+    outline-color: #0D6EFD;
+    outline-offset: 2px;
+}
+
+/* Labels */
+label.erp-label {
+    font-size: 12px;
+    color: #6C757D;
+}
+
+/* Excel-like table styles with only grid lines */
+.excel-table {
+    background-color: #DEE2E6;
+}
+
+/* Default cell styling with padding but no borders */
+.excel-cell, .excel-header, .excel-row-number, .excel-column-letter {
+    padding: 4px;
+    border: none;
+    background-color: #DEE2E6;
+}
+
+/* Just make header text bold */
+.excel-header, .excel-column-letter, .excel-row-number {
+    font-weight: bold;
+    background-color: #DEE2E6;
+}
+
+/* Action button styling */
+.excel-action-button {
+    padding: 2px 8px;
+    font-size: 12px;
+    background-color: blue;
+    border: none;
+}
+
+/* Grid styling - light colored grid lines */
+grid#excel-grid {
+    border: 1px solid #DEE2E6;
+    background-color: #DEE2E6; /* Grid lines color - light gray instead of black */
+}
+
+/* Explicitly set uniform background for grid rows to override defaults */
+grid#excel-grid row:nth-child(odd) {
+    background-color: #DEE2E6;
+}
+
+grid#excel-grid row:nth-child(even) {
+    background-color: #DEE2E6;
+}
+
+/* Table specific styling */
+.excel-table-border {
+    border: 1px solid #DEE2E6;
+}
+
+.excel-table-scrollable {
+    overflow: auto;
+}
